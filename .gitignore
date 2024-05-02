@@ -1,0 +1,26 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+
+# Environment variables
+.env
+
+# Build output
+dist/
+build/
+
+# Dependency directories
+pids/
+logs/
+*.pid
+*.seed
+*.pid.lock
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
