@@ -9,14 +9,27 @@ const registerUser = async (req, res) => {
       phoneNumber,
       email,
       password,
+      generalSettings: {
+        notification,
+        faceId,
+        haptic,
+      },
     });
     if (user) {
-      res.status(201).json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        phoneNumber: user.phoneNumber,
-        createdAt: user.createdAt,
+      res.json({
+        success: true,
+        user: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          phoneNumber: user.phoneNumber,
+          createdAt: user.createdAt,
+          generalSettings: {
+            notification: user.generalSettings.notification,
+            faceId: user.generalSettings.faceId,
+            haptic: user.generalSettings.haptic,
+          },
+        },
       });
     }
   } catch (error) {
@@ -54,6 +67,11 @@ const loginUser = async (req, res) => {
         email: user.email,
         phoneNumber: user.phoneNumber,
         createdAt: user.createdAt,
+        generalSettings: {
+          notification: user.generalSettings.notification,
+          faceId: user.generalSettings.faceId,
+          haptic: user.generalSettings.haptic,
+        },
       },
     });
   } catch (error) {
@@ -159,6 +177,43 @@ const checkUserByPhoneNumber = async (req, res) => {
   }
 };
 
+const editProfile = async (req, res) => {
+  const { email, name } = req.body;
+  const { userId } = req.params; // Assuming userId is passed as a route parameter
+
+  try {
+    // Find the user by userId
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Update the user's name and email
+    user.name = name;
+    user.email = email;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "Profile updated successfully",
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        createdAt: user.createdAt,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -166,4 +221,5 @@ module.exports = {
   checkUserByEmail,
   checkUserByPhoneNumberToChangePassword,
   checkUserByPhoneNumber,
+  editProfile,
 };

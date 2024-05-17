@@ -1,5 +1,4 @@
-require("dotenv").load();
-const twilio = require("twilio");
+require("dotenv").config();
 const AccessToken = require("twilio").jwt.AccessToken;
 const VoiceGrant = AccessToken.VoiceGrant;
 const VoiceResponse = require("twilio").twiml.VoiceResponse;

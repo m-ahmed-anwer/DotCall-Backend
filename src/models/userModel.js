@@ -22,6 +22,20 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    generalSettings: {
+      notification: {
+        type: Boolean,
+        default: false,
+      },
+      faceId: {
+        type: Boolean,
+        default: false,
+      },
+      haptic: {
+        type: Boolean,
+        default: false,
+      },
+    },
     createdAt: {
       type: Date,
       default: Date.now,
