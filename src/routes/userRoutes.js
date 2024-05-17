@@ -7,6 +7,7 @@ const {
   checkUserByPhoneNumberToChangePassword,
   checkUserByPhoneNumber,
   editProfile,
+  editGeneralSettings,
 } = require("../controllers/userController");
 const router = express.Router();
 
@@ -17,5 +18,6 @@ router.post("/email", checkUserByEmail);
 router.post("/passwordChange", checkUserByPhoneNumberToChangePassword);
 router.post("/phoneNumber", checkUserByPhoneNumber);
 router.post("/editProfile/:userId", editProfile);
+router.post("/editGeneralSettings/:userId", editGeneralSettings);
 
 module.exports = router;

@@ -214,6 +214,51 @@ const editProfile = async (req, res) => {
   }
 };
 
+const editGeneralSettings = async (req, res) => {
+  const { notification, faceId, haptic } = req.body;
+  const { userId } = req.params;
+
+  try {
+    // Find the user by userId
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Update the user's generalSettings if they are different
+    if (notification !== undefined)
+      user.generalSettings.notification = notification;
+    if (faceId !== undefined) user.generalSettings.faceId = faceId;
+    if (haptic !== undefined) user.generalSettings.haptic = haptic;
+
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "General settings updated successfully",
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        createdAt: user.createdAt,
+        generalSettings: {
+          notification: user.generalSettings.notification,
+          faceId: user.generalSettings.faceId,
+          haptic: user.generalSettings.haptic,
+        },
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -222,4 +267,5 @@ module.exports = {
   checkUserByPhoneNumberToChangePassword,
   checkUserByPhoneNumber,
   editProfile,
+  editGeneralSettings,
 };
