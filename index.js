@@ -12,7 +12,6 @@ var twilio = require("twilio");
 
 const connection = require("./src/db.js");
 connection();
-
 const app = express();
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
