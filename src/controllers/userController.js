@@ -64,7 +64,7 @@ const loginUser = async (req, res) => {
         message: "Incorrect password",
       });
     }
-
+    
     res.json({
       success: true,
       user: {
