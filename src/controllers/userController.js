@@ -3,6 +3,12 @@ const User = require("../models/userModel.js");
 
 const registerUser = async (req, res) => {
   const { name, email, password, phoneNumber } = req.body;
+  const {
+    notification = false,
+    faceId = false,
+    haptic = false,
+  } = req.body.generalSettings || {};
+
   try {
     const user = await User.create({
       name,
@@ -10,7 +16,7 @@ const registerUser = async (req, res) => {
       email,
       password,
       generalSettings: {
-        notification,
+        fasl,
         faceId,
         haptic,
       },
