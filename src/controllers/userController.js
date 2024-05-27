@@ -16,7 +16,7 @@ const registerUser = async (req, res) => {
       email,
       password,
       generalSettings: {
-        fasl,
+        notification,
         faceId,
         haptic,
       },
