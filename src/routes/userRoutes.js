@@ -20,7 +20,7 @@ router.post("/passwordChange", checkUserByPhoneNumberToChangePassword);
 router.post("/phoneNumber", checkUserByPhoneNumber);
 router.post("/editProfile/:userId", editProfile);
 router.post("/editGeneralSettings/:userId", editGeneralSettings);
-router.post("/getAllRegisteredUsers", getAllRegisteredUsers);
+router.get("/getAllRegisteredUsers", getAllRegisteredUsers);
 
 
 module.exports = router;
