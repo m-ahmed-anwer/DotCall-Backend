@@ -64,7 +64,7 @@ const loginUser = async (req, res) => {
         message: "Incorrect password",
       });
     }
-    
+
     res.json({
       success: true,
       user: {
@@ -265,6 +265,20 @@ const editGeneralSettings = async (req, res) => {
   }
 };
 
+const getAllRegisteredUsers = async (req, res) => {
+  try {
+    const users = await User.find({});
+
+    res.json({
+      success: true,
+      phoneNumbers: users.map((user) => user.phoneNumber),
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -274,4 +288,5 @@ module.exports = {
   checkUserByPhoneNumber,
   editProfile,
   editGeneralSettings,
+  getAllRegisteredUsers,
 };

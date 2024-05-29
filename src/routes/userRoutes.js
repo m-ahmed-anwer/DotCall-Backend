@@ -8,6 +8,7 @@ const {
   checkUserByPhoneNumber,
   editProfile,
   editGeneralSettings,
+  getAllRegisteredUsers,
 } = require("../controllers/userController");
 const router = express.Router();
 
@@ -19,5 +20,7 @@ router.post("/passwordChange", checkUserByPhoneNumberToChangePassword);
 router.post("/phoneNumber", checkUserByPhoneNumber);
 router.post("/editProfile/:userId", editProfile);
 router.post("/editGeneralSettings/:userId", editGeneralSettings);
+router.post("/getAllRegisteredUsers", getAllRegisteredUsers);
+
 
 module.exports = router;
