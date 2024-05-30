@@ -9,6 +9,7 @@ const {
   editProfile,
   editGeneralSettings,
   getAllRegisteredUsers,
+  changeVerification,
 } = require("../controllers/userController");
 const router = express.Router();
 
@@ -21,5 +22,6 @@ router.post("/username:username", checkUserByUsername);
 router.post("/editProfile/:userId", editProfile);
 router.post("/editGeneralSettings/:userId", editGeneralSettings);
 router.get("/getAllRegisteredUsers/:userInput", getAllRegisteredUsers);
+router.post("/changeVerification/:userEmail", changeVerification);
 
 module.exports = router;

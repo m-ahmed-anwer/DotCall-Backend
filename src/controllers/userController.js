@@ -62,20 +62,30 @@ const loginUser = async (req, res) => {
     user.isVerified = true;
     res.json({
       success: true,
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        username: user.username,
-        createdAt: user.createdAt,
-        isVerified: user.isVerified,
-        generalSettings: {
-          notification: user.generalSettings.notification,
-          faceId: user.generalSettings.faceId,
-          haptic: user.generalSettings.haptic,
-        },
-        token: generateAuthToken(user._id),
-      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+const changeVerification = async (req, res) => {
+  const { userEmail } = req.params;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "No user found on this email",
+      });
+    }
+
+    user.isVerified = true;
+    res.json({
+      success: true,
+      message: "Verification Update changed",
     });
   } catch (error) {
     console.error(error);
@@ -298,4 +308,5 @@ module.exports = {
   editProfile,
   editGeneralSettings,
   getAllRegisteredUsers,
+  changeVerification,
 };
