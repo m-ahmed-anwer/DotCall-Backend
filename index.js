@@ -18,6 +18,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/users", usersRoutes);
 app.use("/", callRoute);
 app.use("/accessToken", tokenRoute);
+app.get("/", (req, res) => {
+  res.send("Welcome to DotCall API...");
+});
 
 const server = http.createServer(app);
 server.listen(process.env.PORT || 3000, () => {

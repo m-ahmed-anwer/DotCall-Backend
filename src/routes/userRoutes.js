@@ -4,8 +4,8 @@ const {
   loginUser,
   resetPassword,
   checkUserByEmail,
-  checkUserByPhoneNumberToChangePassword,
-  checkUserByPhoneNumber,
+  checkUserByUsernameToChangePassword,
+  checkUserByUsername,
   editProfile,
   editGeneralSettings,
   getAllRegisteredUsers,
@@ -16,11 +16,10 @@ router.post("/signup", registerUser);
 router.post("/login", loginUser);
 router.post("/resetPassword", resetPassword);
 router.post("/email", checkUserByEmail);
-router.post("/passwordChange", checkUserByPhoneNumberToChangePassword);
-router.post("/phoneNumber", checkUserByPhoneNumber);
+router.post("/passwordChange", checkUserByUsernameToChangePassword);
+router.post("/username:username", checkUserByUsername);
 router.post("/editProfile/:userId", editProfile);
 router.post("/editGeneralSettings/:userId", editGeneralSettings);
 router.get("/getAllRegisteredUsers", getAllRegisteredUsers);
-
 
 module.exports = router;

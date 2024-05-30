@@ -1,25 +1,17 @@
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 const User = require("../models/userModel.js");
+const generateAuthToken = require("../config/generateToke.js");
 
 const registerUser = async (req, res) => {
-  const { name, email, password, phoneNumber } = req.body;
-  const {
-    notification = false,
-    faceId = false,
-    haptic = false,
-  } = req.body.generalSettings || {};
+  const { name, email, password, username } = req.body;
 
   try {
     const user = await User.create({
       name,
-      phoneNumber,
+      username,
       email,
       password,
-      generalSettings: {
-        notification,
-        faceId,
-        haptic,
-      },
     });
     if (user) {
       res.json({
@@ -28,8 +20,9 @@ const registerUser = async (req, res) => {
           _id: user._id,
           name: user.name,
           email: user.email,
-          phoneNumber: user.phoneNumber,
+          username: user.username,
           createdAt: user.createdAt,
+          isVerified: user.isVerified,
           generalSettings: {
             notification: user.generalSettings.notification,
             faceId: user.generalSettings.faceId,
@@ -44,15 +37,15 @@ const registerUser = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
-  const { phoneNumber, password } = req.body;
+  const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ phoneNumber });
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: "No user found on this phone number",
+        message: "No user found on this username",
       });
     }
 
@@ -65,19 +58,22 @@ const loginUser = async (req, res) => {
       });
     }
 
+    user.isVerified = true;
     res.json({
       success: true,
       user: {
         _id: user._id,
         name: user.name,
         email: user.email,
-        phoneNumber: user.phoneNumber,
+        username: user.username,
         createdAt: user.createdAt,
+        isVerified: user.isVerified,
         generalSettings: {
           notification: user.generalSettings.notification,
           faceId: user.generalSettings.faceId,
           haptic: user.generalSettings.haptic,
         },
+        token: generateAuthToken(user._id),
       },
     });
   } catch (error) {
@@ -87,15 +83,15 @@ const loginUser = async (req, res) => {
 };
 
 const resetPassword = async (req, res) => {
-  const { phoneNumber, newPassword } = req.body;
+  const { username, newPassword } = req.body;
 
   try {
-    const user = await User.findOne({ phoneNumber });
+    const user = await User.findOne({ username });
 
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: "Invalid Phone Number",
+        message: "Invalid username",
       });
     }
 
@@ -136,16 +132,16 @@ const checkUserByEmail = async (req, res) => {
   }
 };
 
-const checkUserByPhoneNumberToChangePassword = async (req, res) => {
-  const { phoneNumber } = req.body;
+const checkUserByUsernameToChangePassword = async (req, res) => {
+  const { username } = req.body;
 
   try {
-    const user = await User.findOne({ phoneNumber });
+    const user = await User.findOne({ username });
 
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: "No account registered under this phone number",
+        message: "No account registered under this username",
       });
     }
 
@@ -159,23 +155,23 @@ const checkUserByPhoneNumberToChangePassword = async (req, res) => {
   }
 };
 
-const checkUserByPhoneNumber = async (req, res) => {
-  const { phoneNumber } = req.body;
+const checkUserByUsername = async (req, res) => {
+  const { username } = req.params;
 
   try {
-    const user = await User.findOne({ phoneNumber });
+    const user = await User.findOne({ username });
 
     if (user) {
       return res.status(400).json({
         success: false,
         message:
-          "A user found on this phone number, Try using a different number",
+          "A user found on this username, Try using a different username",
       });
     }
 
     res.json({
       success: true,
-      message: "Account can be created with this phone number",
+      message: "Account can be created with this username",
     });
   } catch (error) {
     console.error(error);
@@ -210,7 +206,7 @@ const editProfile = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
-        phoneNumber: user.phoneNumber,
+        username: user.username,
         createdAt: user.createdAt,
       },
     });
@@ -250,7 +246,7 @@ const editGeneralSettings = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
-        phoneNumber: user.phoneNumber,
+        username: user.username,
         createdAt: user.createdAt,
         generalSettings: {
           notification: user.generalSettings.notification,
@@ -271,7 +267,7 @@ const getAllRegisteredUsers = async (req, res) => {
 
     res.json({
       success: true,
-      phoneNumbers: users.map((user) => user.phoneNumber),
+      usernames: users.map((user) => user.username),
     });
   } catch (error) {
     console.error(error);
@@ -284,8 +280,8 @@ module.exports = {
   loginUser,
   resetPassword,
   checkUserByEmail,
-  checkUserByPhoneNumberToChangePassword,
-  checkUserByPhoneNumber,
+  checkUserByUsernameToChangePassword,
+  checkUserByUsername,
   editProfile,
   editGeneralSettings,
   getAllRegisteredUsers,

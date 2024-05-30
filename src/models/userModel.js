@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    phoneNumber: {
+    username: {
       type: String,
       required: true,
       unique: true,
@@ -21,6 +21,10 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
     },
     generalSettings: {
       notification: {
