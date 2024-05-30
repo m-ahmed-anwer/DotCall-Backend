@@ -165,7 +165,7 @@ const checkUserByUsername = async (req, res) => {
       return res.status(400).json({
         success: false,
         message:
-          "A user found on this username, Try using a different username",
+          "Try using a different username, A user already registered under this username",
       });
     }
 
