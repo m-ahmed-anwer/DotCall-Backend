@@ -45,7 +45,7 @@ const loginUser = async (req, res) => {
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: "No user found on this username",
+        message: "No user found on this email",
       });
     }
 
