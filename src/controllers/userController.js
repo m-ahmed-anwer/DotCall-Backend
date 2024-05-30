@@ -59,7 +59,6 @@ const loginUser = async (req, res) => {
       });
     }
 
-    user.isVerified = true;
     res.json({
       success: true,
       user: {
@@ -74,7 +73,6 @@ const loginUser = async (req, res) => {
           faceId: user.generalSettings.faceId,
           haptic: user.generalSettings.haptic,
         },
-        token: generateAuthToken(user._id),
       },
     });
   } catch (error) {
