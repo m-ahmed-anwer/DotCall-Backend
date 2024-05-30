@@ -10,7 +10,9 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
 const connection = require("./src/db.js");
+const User = require("./src/models/userModel.js");
 connection();
+
 const app = express();
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));

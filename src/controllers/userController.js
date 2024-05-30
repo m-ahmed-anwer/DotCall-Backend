@@ -13,6 +13,7 @@ const registerUser = async (req, res) => {
       email,
       password,
     });
+
     if (user) {
       res.json({
         success: true,
@@ -83,15 +84,15 @@ const loginUser = async (req, res) => {
 };
 
 const resetPassword = async (req, res) => {
-  const { username, newPassword } = req.body;
+  const { email, newPassword } = req.body;
 
   try {
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: "Invalid username",
+        message: "Invalid email",
       });
     }
 
@@ -262,12 +263,24 @@ const editGeneralSettings = async (req, res) => {
 };
 
 const getAllRegisteredUsers = async (req, res) => {
+  const { userInput } = req.params;
+
   try {
     const users = await User.find({});
 
+    const matchingUsers = users.filter((user) => {
+      return (
+        user.username.includes(userInput) ||
+        (user.email.includes(userInput) && user.isVerified === true)
+      );
+    });
+
     res.json({
-      success: true,
-      usernames: users.map((user) => user.username),
+      matchingUsers: matchingUsers.map((user) => ({
+        name: user.name,
+        username: user.username,
+        email: user.email,
+      })),
     });
   } catch (error) {
     console.error(error);

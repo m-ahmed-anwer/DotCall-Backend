@@ -20,6 +20,6 @@ router.post("/passwordChange", checkUserByUsernameToChangePassword);
 router.post("/username:username", checkUserByUsername);
 router.post("/editProfile/:userId", editProfile);
 router.post("/editGeneralSettings/:userId", editGeneralSettings);
-router.get("/getAllRegisteredUsers", getAllRegisteredUsers);
+router.get("/getAllRegisteredUsers/:userInput", getAllRegisteredUsers);
 
 module.exports = router;
