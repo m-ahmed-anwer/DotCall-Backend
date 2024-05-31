@@ -293,8 +293,8 @@ const getAllRegisteredUsers = async (req, res) => {
 
     const matchingUsers = users.filter((user) => {
       return (
-        user.username.includes(userInput) ||
-        (user.email.includes(userInput) && user.isVerified === true)
+        (user.username.includes(userInput) || user.email.includes(userInput)) &&
+        user.isVerified === true
       );
     });
 
