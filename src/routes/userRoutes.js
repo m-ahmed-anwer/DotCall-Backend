@@ -4,7 +4,6 @@ const {
   loginUser,
   resetPassword,
   checkUserByEmail,
-  checkUserByUsernameToChangePassword,
   checkUserByUsername,
   editProfile,
   editGeneralSettings,
@@ -17,7 +16,6 @@ router.post("/signup", registerUser);
 router.post("/login", loginUser);
 router.post("/resetPassword", resetPassword);
 router.post("/email", checkUserByEmail);
-router.post("/passwordChange", checkUserByUsernameToChangePassword);
 router.post("/username:username", checkUserByUsername);
 router.post("/editProfile/:userId", editProfile);
 router.post("/editGeneralSettings/:userId", editGeneralSettings);

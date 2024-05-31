@@ -1,5 +1,7 @@
 require("dotenv").config();
 const usersRoutes = require("./src/routes/userRoutes.js");
+const friendsRoutes = require("./src/routes/friendsRoute.js");
+
 const callRoute = require("./src/routes/callRoute.js");
 const tokenRoute = require("./src/routes/tokenRoute.js");
 const http = require("http");
@@ -18,6 +20,7 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use("/users", usersRoutes);
+app.use("/friends", friendsRoutes);
 app.use("/", callRoute);
 app.use("/accessToken", tokenRoute);
 app.get("/", (req, res) => {

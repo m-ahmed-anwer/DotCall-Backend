@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const User = require("../models/userModel.js");
+const Friends = require("../models/friendModel.js");
 const generateAuthToken = require("../config/generateToke.js");
 
 const registerUser = async (req, res) => {
@@ -12,6 +13,13 @@ const registerUser = async (req, res) => {
       username,
       email,
       password,
+    });
+
+    await Friends.create({
+      name,
+      email,
+      username,
+      friends: [],
     });
 
     if (user) {
@@ -156,29 +164,6 @@ const checkUserByEmail = async (req, res) => {
   }
 };
 
-const checkUserByUsernameToChangePassword = async (req, res) => {
-  const { username } = req.body;
-
-  try {
-    const user = await User.findOne({ username });
-
-    if (!user) {
-      return res.status(400).json({
-        success: false,
-        message: "No account registered under this username",
-      });
-    }
-
-    res.json({
-      success: true,
-      message: "Password Can be changed",
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Server error" });
-  }
-};
-
 const checkUserByUsername = async (req, res) => {
   const { username } = req.params;
 
@@ -316,7 +301,6 @@ module.exports = {
   loginUser,
   resetPassword,
   checkUserByEmail,
-  checkUserByUsernameToChangePassword,
   checkUserByUsername,
   editProfile,
   editGeneralSettings,
