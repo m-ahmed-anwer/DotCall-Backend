@@ -19,7 +19,7 @@ router.post("/email", checkUserByEmail);
 router.post("/username:username", checkUserByUsername);
 router.post("/editProfile/:userId", editProfile);
 router.post("/editGeneralSettings/:userId", editGeneralSettings);
-router.get("/getAllRegisteredUsers/:userInput", getAllRegisteredUsers);
+router.post("/getAllRegisteredUsers/:userInput", getAllRegisteredUsers);
 router.post("/changeVerification/:userEmail", changeVerification);
 
 module.exports = router;

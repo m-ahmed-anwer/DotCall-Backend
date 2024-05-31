@@ -30,7 +30,15 @@ const getFriends = async (req, res) => {
   const { userEmail } = req.params;
 
   try {
-    const users = await Friends.find({ email: userEmail });
+    const user = await Friends.findOne({ email: userEmail });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    res.status(200).json({ success: true, friends: user.friends });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Server error" });
