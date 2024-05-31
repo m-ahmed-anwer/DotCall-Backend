@@ -62,6 +62,19 @@ const loginUser = async (req, res) => {
     user.isVerified = true;
     res.json({
       success: true,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        username: user.username,
+        createdAt: user.createdAt,
+        generalSettings: {
+          notification: user.generalSettings.notification,
+          faceId: user.generalSettings.faceId,
+          haptic: user.generalSettings.haptic,
+        },
+        token: generateAuthToken(user._id),
+      },
     });
   } catch (error) {
     console.error(error);
