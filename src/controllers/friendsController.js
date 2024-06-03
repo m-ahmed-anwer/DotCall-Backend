@@ -38,7 +38,7 @@ const addFriends = async (req, res) => {
 };
 
 const acceptFriend = async (req, res) => {
-  const { email, name, username } = req.body;
+  const { email } = req.body;
   const { userEmail } = req.params;
 
   try {
