@@ -49,6 +49,7 @@ const addFriends = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
 const acceptFriend = async (req, res) => {
   const { email } = req.body;
   const { userEmail } = req.params;
