@@ -1,5 +1,9 @@
 const express = require("express");
-const { addFriends, getFriends } = require("../controllers/friendsController");
+const {
+  addFriends,
+  getFriends,
+  acceptFriend,
+} = require("../controllers/friendsController");
 const router = express.Router();
 
 router.post("/addFriends/:userEmail", addFriends);
