@@ -272,12 +272,17 @@ const editGeneralSettings = async (req, res) => {
 
 const getAllRegisteredUsers = async (req, res) => {
   const { userInput } = req.params;
+  const { email } = req.body; // Email to exclude
 
   try {
     const users = await User.find({});
 
     const matchingUsers = users.filter((user) => {
-      return user.username.includes(userInput) && user.isVerified === true;
+      return (
+        user.username.includes(userInput) &&
+        user.isVerified === true &&
+        user.email !== email
+      );
     });
 
     res.json({

@@ -38,6 +38,7 @@ const addFriends = async (req, res) => {
 };
 
 const getFriends = async (req, res) => {
+  const { email } = req.body;
   const { userEmail } = req.params;
 
   try {
@@ -49,10 +50,7 @@ const getFriends = async (req, res) => {
         .json({ success: false, message: "User not found" });
     }
 
-    // Exclude the user specified in req.body.email
-    const friends = await Friends.find({ email: { $ne: req.body.email } });
-
-    res.status(200).json({ success: true, friends });
+    res.status(200).json({ success: true, friends: user.friends });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Server error" });
