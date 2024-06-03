@@ -277,10 +277,7 @@ const getAllRegisteredUsers = async (req, res) => {
     const users = await User.find({});
 
     const matchingUsers = users.filter((user) => {
-      return (
-        (user.username.includes(userInput) || user.email.includes(userInput)) &&
-        user.isVerified === true
-      );
+      return user.username.includes(userInput) && user.isVerified === true;
     });
 
     res.json({
