@@ -23,6 +23,13 @@ const friendsSchema = new mongoose.Schema(
         email: { type: String, required: true },
       },
     ],
+    friendsToAccept: [
+      {
+        name: { type: String, required: true },
+        username: { type: String, required: true },
+        email: { type: String, required: true },
+      },
+    ],
   },
   {
     collection: "friends",
