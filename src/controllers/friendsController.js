@@ -8,32 +8,22 @@ const addFriends = async (req, res) => {
     const user = await Friends.findOne({ email: userEmail });
     const usertoAdd = await Friends.findOne({ email: email });
 
-    if (!user) {
+    if (!user || !usertoAdd) {
       return res
         .status(404)
         .json({ success: false, message: "User not found" });
-    }
-    if (!usertoAdd) {
-      return res
-        .status(404)
-        .json({ success: false, message: "No User to add" });
     }
 
     // Check if the email address already exists in the friends array
     const existingFriend = user.friendsToGetAccepted.find(
       (friendsToGetAccepted) => friendsToGetAccepted.email === email
     );
-    if (existingFriend) {
-      return res.status(400).json({
-        success: false,
-        message: "Friend already Accepted",
-      });
-    }
 
     const existingFriendToAdd = usertoAdd.friendsToAccept.find(
-      (friendsToAccept) => friendsToAccept.email === email
+      (friendsToAccept) => friendsToAccept.email === userEmail
     );
-    if (existingFriendToAdd) {
+
+    if (existingFriend || existingFriendToAdd) {
       return res.status(400).json({
         success: false,
         message: "Friend already Accepted",
