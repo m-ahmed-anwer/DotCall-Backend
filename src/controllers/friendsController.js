@@ -36,7 +36,7 @@ const addFriends = async (req, res) => {
       username: user.username,
     });
 
-    user.friendsToGetAccept.push({ name, email, username });
+    user.friendsToGetAccepted.push({ name, email, username });
 
     await user.save();
     await usertoAdd.save();
@@ -49,24 +49,22 @@ const addFriends = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
-
 const acceptFriend = async (req, res) => {
   const { email } = req.body;
   const { userEmail } = req.params;
 
   try {
     const user = await Friends.findOne({ email: userEmail });
+    const userGettingAccepted = await Friends.findOne({ email });
 
-    const userGettingAccepted = await Friends.findOne({ email: email });
-
-    if (!user) {
+    if (!user || !userGettingAccepted) {
       return res
         .status(404)
         .json({ success: false, message: "User not found" });
     }
 
     const existingFriendIndex = user.friendsToAccept.findIndex(
-      (friendsToAccept) => friendsToAccept.email === email
+      (friend) => friend.email === email
     );
     if (existingFriendIndex === -1) {
       return res.status(400).json({
@@ -76,14 +74,11 @@ const acceptFriend = async (req, res) => {
     }
 
     const existingFriend = user.friendsToAccept[existingFriendIndex];
-
-    user.friendsToAccept = user.friendsToAccept.filter(
-      (friend, index) => index !== existingFriendIndex
-    );
+    user.friendsToAccept.splice(existingFriendIndex, 1);
 
     const existingFriendAcceptedIndex =
       userGettingAccepted.friendsToGetAccept.findIndex(
-        (friendsToGetAccept) => friendsToGetAccept.email === userEmail
+        (friend) => friend.email === userEmail
       );
     if (existingFriendAcceptedIndex === -1) {
       return res.status(400).json({
@@ -91,16 +86,16 @@ const acceptFriend = async (req, res) => {
         message: "Friend not found in friendsToGetAccept",
       });
     }
-    const existingFriendGettingaccepted =
-      userGettingAccepted.friendsToGetAccept[existingFriendAcceptedIndex];
 
-    userGettingAccepted.friendsToGetAccept =
-      userGettingAccepted.friendsToGetAccept.filter(
-        (friend, index) => index !== existingFriendGettingaccepted
-      );
+    const existingFriendGettingAccepted =
+      userGettingAccepted.friendsToGetAccept[existingFriendAcceptedIndex];
+    userGettingAccepted.friendsToGetAccept.splice(
+      existingFriendAcceptedIndex,
+      1
+    );
 
     user.friends.push(existingFriend);
-    userGettingAccepted.friends.push(existingFriendGettingaccepted);
+    userGettingAccepted.friends.push(existingFriendGettingAccepted);
 
     await user.save();
     await userGettingAccepted.save();
