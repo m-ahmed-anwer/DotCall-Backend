@@ -58,49 +58,55 @@ const acceptFriend = async (req, res) => {
     const user = await Friends.findOne({ email: acceptingUserEmail });
     const userGettingAccepted = await Friends.findOne({ email: email });
 
+    // const existingFriendIndex = user.friendsToAccept.findIndex(
+    //   (friend) => friend.email === email
+    // );
+    // if (existingFriendIndex === -1) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Friend not found in friendsToAccept",
+    //   });
+    // }
 
+    // const existingFriend = await Friends.findOne({
+    //   friendsToAccept: acceptingUserEmail,
+    // });
 
-    const existingFriendIndex = user.friendsToAccept.findIndex(
-      (friend) => friend.email === email
-    );
-    if (existingFriendIndex === -1) {
-      return res.status(400).json({
-        success: false,
-        message: "Friend not found in friendsToAccept",
-      });
-    }
-    const existingFriend = user.friendsToAccept[existingFriendIndex];
+    // user.friendsToAccept.splice(existingFriendIndex, 1);
 
-    user.friendsToAccept.splice(existingFriendIndex, 1);
+    // const existingFriendAcceptedIndex =
+    //   userGettingAccepted.friendsToGetAccepted.findIndex(
+    //     (friend) => friend.email === acceptingUserEmail
+    //   );
+    // if (existingFriendAcceptedIndex === -1) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Friend not found in friendsToGetAccept",
+    //   });
+    // }
 
-    const existingFriendAcceptedIndex =
-      userGettingAccepted.friendsToGetAccepted.findIndex(
-        (friend) => friend.email === acceptingUserEmail
-      );
-    if (existingFriendAcceptedIndex === -1) {
-      return res.status(400).json({
-        success: false,
-        message: "Friend not found in friendsToGetAccept",
-      });
-    }
+    // const existingFriendGettingAccepted =
+    //   userGettingAccepted.friendsToGetAccepted[existingFriendAcceptedIndex];
 
-    const existingFriendGettingAccepted =
-      userGettingAccepted.friendsToGetAccepted[existingFriendAcceptedIndex];
+    // userGettingAccepted.friendsToGetAccepted.splice(
+    //   existingFriendAcceptedIndex,
+    //   1
+    // );
 
-    userGettingAccepted.friendsToGetAccepted.splice(
-      existingFriendAcceptedIndex,
-      1
-    );
+    // user.friends.push(existingFriend);
+    // userGettingAccepted.friends.push(existingFriendGettingAccepted);
 
-    user.friends.push(existingFriend);
-    userGettingAccepted.friends.push(existingFriendGettingAccepted);
-
-    await user.save();
-    await userGettingAccepted.save();
+    // await user.save();
+    // await userGettingAccepted.save();
 
     res
       .status(200)
-      .json({ success: true, message: "Friend added successfully" });
+      .json({
+        success: true,
+        message: "Friend added successfully",
+        f: user,
+        f2: userGettingAccepted,
+      });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Server error" });
