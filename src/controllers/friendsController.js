@@ -51,8 +51,8 @@ const addFriends = async (req, res) => {
 };
 
 const acceptFriend = async (req, res) => {
-  const { email } = req.body;
-  const { acceptingUserEmail } = req.params;
+  const { email, acceptingUserEmail } = req.body;
+
 
   try {
     const user = await Friends.findOne({ email: acceptingUserEmail });

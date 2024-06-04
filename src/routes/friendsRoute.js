@@ -8,6 +8,6 @@ const router = express.Router();
 
 router.post("/addFriends/:userEmail", addFriends);
 router.post("/getFriends/:userEmail", getFriends);
-router.post("/acceptFriend/:userEmail", acceptFriend);
+router.post("/acceptFriend", acceptFriend);
 
 module.exports = router;
