@@ -162,25 +162,19 @@ const getAllFriends = async (req, res) => {
     const user = await Friends.findOne({ email });
     const friends = await Friends.find({});
 
-    const isUsernameInAnyList =
-      user.friends.some((friend) => friend.username.includes(userInput)) ||
-      user.friendsToAccept.some((friend) =>
-        friend.username.includes(userInput)
-      ) ||
-      user.friendsToGetAccepted.some((friend) =>
-        friend.username.includes(userInput)
-      );
-
-    if (isUsernameInAnyList) {
-      res.json({
-        success: false,
-        message: "Username found in one of the lists",
-      });
-      return;
-    }
+    // Filter out the three user lists
+    const excludedUsernames = [
+      ...user.friends.map((friend) => friend.username),
+      ...user.friendsToAccept.map((friend) => friend.username),
+      ...user.friendsToGetAccepted.map((friend) => friend.username),
+    ];
 
     const matchingUsers = friends.filter((friend) => {
-      return friend.username.includes(userInput) && friend.email !== email;
+      return (
+        !excludedUsernames.includes(friend.username) &&
+        friend.username.includes(userInput) &&
+        friend.email !== email
+      );
     });
 
     res.json({
@@ -196,7 +190,6 @@ const getAllFriends = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
-
 
 module.exports = {
   getFriends,
