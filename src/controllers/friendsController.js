@@ -58,11 +58,7 @@ const acceptFriend = async (req, res) => {
     const user = await Friends.findOne({ email: acceptingUserEmail });
     const userGettingAccepted = await Friends.findOne({ email: email });
 
-    if (!user || !userGettingAccepted) {
-      return res
-        .status(404)
-        .json({ success: false, message: "User not found" });
-    }
+
 
     const existingFriendIndex = user.friendsToAccept.findIndex(
       (friend) => friend.email === email
