@@ -58,38 +58,19 @@ const acceptFriend = async (req, res) => {
     const user = await Friends.findOne({ email: acceptingUserEmail });
     const userGettingAccepted = await Friends.findOne({ email: email });
 
-
     const existingFriendIndex = user.friendsToAccept.findIndex(
       (friend) => friend.email === email
     );
-    if (existingFriendIndex === -1) {
-      return res.status(400).json({
-        success: false,
-        message: "Friend not found in friendsToAccept",
-      });
-    }
-    const existingFriend = user.friendsToAccept[existingFriendIndex];
 
-    user.friendsToAccept.splice(existingFriendIndex, 1);
+    const existingFriend = user.friendsToAccept[existingFriendIndex];
 
     const existingFriendAcceptedIndex =
       userGettingAccepted.friendsToGetAccept.findIndex(
         (friend) => friend.email === acceptingUserEmail
       );
-    if (existingFriendAcceptedIndex === -1) {
-      return res.status(400).json({
-        success: false,
-        message: "Friend not found in friendsToGetAccept",
-      });
-    }
 
     const existingFriendGettingAccepted =
       userGettingAccepted.friendsToGetAccept[existingFriendAcceptedIndex];
-
-    userGettingAccepted.friendsToGetAccept.splice(
-      existingFriendAcceptedIndex,
-      1
-    );
 
     user.friends.push(existingFriend);
     userGettingAccepted.friends.push(existingFriendGettingAccepted);
