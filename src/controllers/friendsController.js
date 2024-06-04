@@ -132,8 +132,30 @@ const getFriends = async (req, res) => {
   }
 };
 
+const getFriendsToAccept = async (req, res) => {
+  const { userEmail } = req.params;
+
+  try {
+    const user = await Friends.findOne({ email: userEmail });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    res
+      .status(200)
+      .json({ success: true, friendsToAccept: user.friendsToAccept });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 module.exports = {
   getFriends,
   addFriends,
   acceptFriend,
+  getFriendsToAccept,
 };
