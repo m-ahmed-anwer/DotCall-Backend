@@ -15,6 +15,9 @@ const addFriends = async (req, res) => {
     }
 
     // Check if the email address already exists in the friends array
+
+    const friend = user.friends.find((friends) => friends.email === email);
+
     const existingFriend = user.friendsToGetAccepted.find(
       (friendsToGetAccepted) => friendsToGetAccepted.email === email
     );
@@ -23,7 +26,7 @@ const addFriends = async (req, res) => {
       (friendsToAccept) => friendsToAccept.email === userEmail
     );
 
-    if (existingFriend || existingFriendToAdd) {
+    if (friend || existingFriend || existingFriendToAdd) {
       return res.status(400).json({
         success: false,
         message: "Friend already Accepted",
