@@ -69,6 +69,7 @@ const acceptFriend = async (req, res) => {
     const existingFriendIndex = user.friendsToAccept.findIndex(
       (friend) => friend.email === email
     );
+
     if (existingFriendIndex === -1) {
       return res.status(400).json({
         success: false,
@@ -153,9 +154,54 @@ const getFriendsToAccept = async (req, res) => {
   }
 };
 
+const getAllFriends = async (req, res) => {
+  const { userInput } = req.params;
+  const { email } = req.body;
+
+  try {
+    const user = await Friends.findOne({ email });
+    const friends = await Friends.find({});
+
+    const isUsernameInAnyList =
+      user.friends.some((friend) => friend.username.includes(userInput)) ||
+      user.friendsToAccept.some((friend) =>
+        friend.username.includes(userInput)
+      ) ||
+      user.friendsToGetAccepted.some((friend) =>
+        friend.username.includes(userInput)
+      );
+
+    if (isUsernameInAnyList) {
+      res.json({
+        success: false,
+        message: "Username found in one of the lists",
+      });
+      return;
+    }
+
+    const matchingUsers = friends.filter((friend) => {
+      return friend.username.includes(userInput) && friend.email !== email;
+    });
+
+    res.json({
+      matchingUsers: matchingUsers.map((friend) => ({
+        name: friend.name,
+        username: friend.username,
+        email: friend.email,
+      })),
+      success: true,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+
 module.exports = {
   getFriends,
   addFriends,
   acceptFriend,
   getFriendsToAccept,
+  getAllFriends,
 };
