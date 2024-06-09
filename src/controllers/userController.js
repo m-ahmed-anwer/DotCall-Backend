@@ -202,7 +202,7 @@ const checkUserByUsername = async (req, res) => {
 };
 
 const editProfile = async (req, res) => {
-  const { email, name } = req.body;
+  const { name } = req.body;
   const { userId } = req.params; // Assuming userId is passed as a route parameter
 
   try {
@@ -218,7 +218,6 @@ const editProfile = async (req, res) => {
 
     // Update the user's name and email
     user.name = name;
-    user.email = email;
     await user.save();
 
     res.json({
