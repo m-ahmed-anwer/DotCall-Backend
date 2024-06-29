@@ -1,5 +1,6 @@
 // socketManager.js
 const { Server } = require("socket.io");
+const User = require("./src/models/userModel"); // Import user model
 
 let io;
 
@@ -14,39 +15,39 @@ function initializeSocket(server) {
   io.on("connection", (socket) => {
     console.log("a user connected: ", socket.id);
 
+    socket.on("register", async (email) => {
+      try {
+        // Update user's socket ID in the database
+        await User.findOneAndUpdate({ email }, { socketId: socket.id });
+        console.log(`User registered: ${email} with socket ID: ${socket.id}`);
+      } catch (error) {
+        console.error("Error updating socket ID:", error);
+      }
+    });
+
     socket.on("disconnect", () => {
       console.log("user disconnected: ", socket.id);
     });
 
-    // Handle user registration
-    socket.on("register", (email) => {
-      // Store user information as needed
-      console.log(`User registered: ${email} with socket ID: ${socket.id}`);
-    });
-
-    // Handle offer
-    socket.on("offer", (data) => {
+    socket.on("offer", async (data) => {
       const { to, offer } = data;
-      // Find recipient socket ID based on email or other identifier
-      const recipientSocketId = findSocketIdByEmail(to);
+      const recipientSocketId = await findSocketIdByEmail(to);
       if (recipientSocketId) {
         io.to(recipientSocketId).emit("offer", { from: socket.id, offer });
       }
     });
 
-    // Handle answer
-    socket.on("answer", (data) => {
+    socket.on("answer", async (data) => {
       const { to, answer } = data;
-      const recipientSocketId = findSocketIdByEmail(to);
+      const recipientSocketId = await findSocketIdByEmail(to);
       if (recipientSocketId) {
         io.to(recipientSocketId).emit("answer", { from: socket.id, answer });
       }
     });
 
-    // Handle ICE candidates
-    socket.on("candidate", (data) => {
+    socket.on("candidate", async (data) => {
       const { to, candidate } = data;
-      const recipientSocketId = findSocketIdByEmail(to);
+      const recipientSocketId = await findSocketIdByEmail(to);
       if (recipientSocketId) {
         io.to(recipientSocketId).emit("candidate", {
           from: socket.id,
@@ -57,13 +58,14 @@ function initializeSocket(server) {
   });
 }
 
-function findSocketIdByEmail(email) {
-  // Implement your logic to find socket ID based on email
-  // Example: return socketId stored in a database or memory
-  // Here, assume `users` is an object storing socket IDs by email
-  // Replace with your actual implementation
-  const socketId = Object.keys(users).find((id) => users[id] === email);
-  return socketId;
+async function findSocketIdByEmail(email) {
+  try {
+    const user = await User.findOne({ email });
+    return user ? user.socketId : null;
+  } catch (error) {
+    console.error("Error finding socket ID:", error);
+    return null;
+  }
 }
 
 module.exports = {
