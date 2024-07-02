@@ -193,10 +193,44 @@ const getAllFriends = async (req, res) => {
   }
 };
 
+const updateRecordStat = async (req, res) => {
+  const { currentUserMail } = req.params;
+  const { callerEmail } = req.body;
+
+  try {
+    const user = await Friends.findOne({ email: currentUserMail });
+    const caller = await Friends.findOne({ email: callerEmail });
+
+    // Filter out the three user lists
+    const currentUserFriend = user.friends.find((friends) => friends.email === email);
+    const callerFriend = caller.friends.find(
+      (friends) => friends.email === email
+    );
+
+    callerFriend.allowRecordCurrentUser = !callerFriend.allowRecordCurrentUser;
+    currentUserFriend.allowRecordCaller = !currentUserFriend.allowRecordCaller; 
+
+    res.json({
+      user: matchingUsers.map((friend) => ({
+        name: friend.name,
+        username: friend.username,
+        email: friend.email,
+        allowRecordCaller: friend.allowRecordCaller,
+        allowRecordCurrentUser: friend.allowRecordCurrentUser,
+      })),
+      success: true,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
 module.exports = {
   getFriends,
   addFriends,
   acceptFriend,
   getFriendsToAccept,
   getAllFriends,
+  updateRecordStat,
 };
