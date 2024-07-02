@@ -201,16 +201,22 @@ const updateRecordStat = async (req, res) => {
     const user = await Friends.findOne({ email: currentUserMail });
     const caller = await Friends.findOne({ email: callerEmail });
 
-    // Filter out the three user lists
+    // Filter out the current user's friend
     const currentUserFriend = user.friends.find(
-      (friends) => friends.email === callerEmail
+      (friend) => friend.email === callerEmail
     );
+    // Filter out the caller's friend
     const callerFriend = caller.friends.find(
-      (friends) => friends.email === currentUserMail
+      (friend) => friend.email === currentUserMail
     );
 
+    // Toggle the allowRecordCurrentUser and allowRecordCaller flags
     callerFriend.allowRecordCurrentUser = !callerFriend.allowRecordCurrentUser;
     currentUserFriend.allowRecordCaller = !currentUserFriend.allowRecordCaller;
+
+    // Save changes to caller's friend and current user's friend
+    await caller.save();
+    await user.save();
 
     res.json({
       user: {
