@@ -16,6 +16,6 @@ router.post("/getFriends/:userEmail", getFriends);
 router.post("/getFriendsToAccept/:userEmail", getFriendsToAccept);
 router.post("/getAllFriends/:userInput", getAllFriends);
 router.post("/updateRecordStat/:currentUserMail", updateRecordStat);
-router.post("/getUserRecordance/:email", getRecordStat);
+router.post("/getRecordStat/:email", getRecordStat);
 
 module.exports = router;
