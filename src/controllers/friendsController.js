@@ -202,22 +202,47 @@ const updateRecordStat = async (req, res) => {
     const caller = await Friends.findOne({ email: callerEmail });
 
     // Filter out the three user lists
-    const currentUserFriend = user.friends.find((friends) => friends.email === email);
+    const currentUserFriend = user.friends.find(
+      (friends) => friends.email === callerEmail
+    );
     const callerFriend = caller.friends.find(
-      (friends) => friends.email === email
+      (friends) => friends.email === currentUserMail
     );
 
     callerFriend.allowRecordCurrentUser = !callerFriend.allowRecordCurrentUser;
-    currentUserFriend.allowRecordCaller = !currentUserFriend.allowRecordCaller; 
+    currentUserFriend.allowRecordCaller = !currentUserFriend.allowRecordCaller;
 
     res.json({
-      user: matchingUsers.map((friend) => ({
+      user: {
+        name: currentUserFriend.name,
+        username: currentUserFriend.username,
+        email: currentUserFriend.email,
+        allowRecordCaller: currentUserFriend.allowRecordCaller,
+        allowRecordCurrentUser: currentUserFriend.allowRecordCurrentUser,
+      },
+      success: true,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+const getRecordStat = async (req, res) => {
+  const { email } = req.params;
+
+  try {
+    const user = await Friends.findOne({ email: currentUserMail });
+    const friend = user.friends.find((friends) => friends.email === email);
+    
+    res.json({
+      user: {
         name: friend.name,
         username: friend.username,
         email: friend.email,
         allowRecordCaller: friend.allowRecordCaller,
         allowRecordCurrentUser: friend.allowRecordCurrentUser,
-      })),
+      },
       success: true,
     });
   } catch (error) {
@@ -233,4 +258,5 @@ module.exports = {
   getFriendsToAccept,
   getAllFriends,
   updateRecordStat,
+  getRecordStat,
 };
