@@ -95,8 +95,7 @@ const acceptFriend = async (req, res) => {
       userGettingAccepted.friendsToGetAccepted[existingFriendAcceptedIndex];
 
     userGettingAccepted.friendsToGetAccepted.splice(
-      existingFriendAcceptedIndex,
-      1
+      existingFriendAcceptedIndex
     );
 
     user.friends.push(existingFriend);
@@ -193,28 +192,55 @@ const getAllFriends = async (req, res) => {
   }
 };
 
-const updateRecordStat = async (req, res) => {
+const updateRecordStatTRUE = async (req, res) => {
   const { currentUserMail } = req.params;
   const { callerEmail } = req.body;
 
   try {
     const user = await Friends.findOne({ email: currentUserMail });
     const caller = await Friends.findOne({ email: callerEmail });
-
-    // Filter out the current user's friend
     const currentUserFriend = user.friends.find(
       (friend) => friend.email === callerEmail
     );
-    // Filter out the caller's friend
     const callerFriend = caller.friends.find(
       (friend) => friend.email === currentUserMail
     );
+    callerFriend.allowRecordCurrentUser = true;
+    currentUserFriend.allowRecordCaller = true;
 
-    // Toggle the allowRecordCurrentUser and allowRecordCaller flags
-    callerFriend.allowRecordCurrentUser = !callerFriend.allowRecordCurrentUser;
-    currentUserFriend.allowRecordCaller = !currentUserFriend.allowRecordCaller;
+    await caller.save();
+    await user.save();
 
-    // Save changes to caller's friend and current user's friend
+    res.json({
+      user: {
+        name: currentUserFriend.name,
+        username: currentUserFriend.username,
+        email: currentUserFriend.email,
+        allowRecordCaller: currentUserFriend.allowRecordCaller,
+        allowRecordCurrentUser: currentUserFriend.allowRecordCurrentUser,
+      },
+      success: true,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+const updateRecordStatFALSE = async (req, res) => {
+  const { currentUserMail } = req.params;
+  const { callerEmail } = req.body;
+
+  try {
+    const user = await Friends.findOne({ email: currentUserMail });
+    const caller = await Friends.findOne({ email: callerEmail });
+    const currentUserFriend = user.friends.find(
+      (friend) => friend.email === callerEmail
+    );
+    const callerFriend = caller.friends.find(
+      (friend) => friend.email === currentUserMail
+    );
+    callerFriend.allowRecordCurrentUser = false;
+    currentUserFriend.allowRecordCaller = false;
     await caller.save();
     await user.save();
 
@@ -264,6 +290,7 @@ module.exports = {
   acceptFriend,
   getFriendsToAccept,
   getAllFriends,
-  updateRecordStat,
+  updateRecordStatFALSE,
+  updateRecordStatTRUE,
   getRecordStat,
 };

@@ -5,7 +5,8 @@ const {
   acceptFriend,
   getFriendsToAccept,
   getAllFriends,
-  updateRecordStat,
+  updateRecordStatTRUE,
+  updateRecordStatFALSE,
   getRecordStat,
 } = require("../controllers/friendsController");
 const router = express.Router();
@@ -15,7 +16,8 @@ router.post("/acceptFriend", acceptFriend);
 router.post("/getFriends/:userEmail", getFriends);
 router.post("/getFriendsToAccept/:userEmail", getFriendsToAccept);
 router.post("/getAllFriends/:userInput", getAllFriends);
-router.post("/updateRecordStat/:currentUserMail", updateRecordStat);
+router.post("/updateRecordStatTRUE/:currentUserMail", updateRecordStatTRUE);
+router.post("/updateRecordStatFALSE/:currentUserMail", updateRecordStatFALSE);
 router.post("/getRecordStat/:currentUserMail", getRecordStat);
 
 module.exports = router;
