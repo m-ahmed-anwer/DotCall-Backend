@@ -182,6 +182,7 @@ const getAllFriends = async (req, res) => {
         name: friend.name,
         username: friend.username,
         email: friend.email,
+        allowRecord: friend.allowRecord,
       })),
       success: true,
     });

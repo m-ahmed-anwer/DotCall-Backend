@@ -21,6 +21,7 @@ const friendsSchema = new mongoose.Schema(
         name: { type: String, required: true },
         username: { type: String, required: true },
         email: { type: String, required: true },
+        allowRecord: { type: Boolean, required: true, default: true },
       },
     ],
     friendsToAccept: [
