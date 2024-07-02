@@ -229,12 +229,13 @@ const updateRecordStat = async (req, res) => {
 };
 
 const getRecordStat = async (req, res) => {
-  const { email } = req.params;
+  const { currentUserMail } = req.params;
+  const { email } = req.body;
 
   try {
     const user = await Friends.findOne({ email: currentUserMail });
     const friend = user.friends.find((friends) => friends.email === email);
-    
+
     res.json({
       user: {
         name: friend.name,
